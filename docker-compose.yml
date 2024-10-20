@@ -1,6 +1,26 @@
-﻿services:
-  quotely-dotnet-api:
-    image: quotely-dotnet-api
+﻿version: '3.9'
+
+services:
+  testing-three-dotnet-api:
+    image: testing-three/testing-three-dotnet-api
+    container_name: testing-three-dotnet-api
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - '30003:5000'
+    healthcheck:
+      test: curl --fail http://localhost:5000/health || exit 1
+      interval: 40s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
+    networks:
+      - api-network
+    env_file:
+      - .env
+
+networks:
+  api-network:
+    external: true
