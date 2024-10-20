@@ -1,5 +1,5 @@
-﻿variables:
-  PROJECT_PATH: "/var/www/delete-this/testing-three/testing-three-dotnet-api"
+variables:
+   PROJECT_PATH: "/var/www/delete-this/testing-three/testing-three-dotnet-api"
 
 stages:
   - deploy
