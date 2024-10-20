@@ -22,7 +22,7 @@ start-job:
   script:
     - cd "$PROJECT_PATH"
     - docker-compose build --no-cache
-    - docker-compose up -d --remove-orphans # host
+    - docker-compose up -d --remove-orphans
   only:
     - master
   tags:
