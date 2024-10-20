@@ -3,9 +3,7 @@ using quotely_dotnet_api.Interfaces;
 
 namespace quotely_dotnet_api.Services;
 
-public class QuotableHttpService(
-    ILogger<QuotableHttpService> logger
-) : IQuotableHttpService
+public class QuotableHttpService(ILogger<QuotableHttpService> logger) : IQuotableHttpService
 {
     private readonly ILogger<QuotableHttpService> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
@@ -15,7 +13,7 @@ public class QuotableHttpService(
         using var client = new HttpClient();
         client.BaseAddress = new Uri("http://api.quotable.io");
 
-        _logger.LogInformation("Sending New TMDB HTTP Request...");
+        _logger.LogInformation("Sending New Quotable HTTP Request...");
         var res = await client.GetAsync(relativeUri);
         if (res.IsSuccessStatusCode)
         {

@@ -6,14 +6,15 @@ namespace quotely_dotnet_api.Entities;
 public class Quote
 {
     [Key]
-    [Column(Order = 0)] 
+    [Column(Order = 0)]
     [MaxLength(200)]
     public string Id { get; set; } = null!;
 
     [MaxLength(200)]
     public string Author { get; set; } = null!;
-    
+
     [MaxLength(400)]
+    [Column(TypeName = "text")]
     public string Content { get; set; } = null!;
 
     public string[] Tags { get; set; } = [];
@@ -21,9 +22,9 @@ public class Quote
     [MaxLength(100)]
     public string AuthorSlug { get; set; } = null!;
 
-    public int Length { get; set; } 
-    
+    public int Length { get; set; }
+
     public DateTime DateAdded { get; set; }
-    
+
     public DateTime DateModified { get; set; }
 }

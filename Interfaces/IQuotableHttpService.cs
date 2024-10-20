@@ -2,5 +2,5 @@
 
 public interface IQuotableHttpService
 {
-    
+    Task<TReturn?> GetAsync<TReturn>(string relativeUri);
 }

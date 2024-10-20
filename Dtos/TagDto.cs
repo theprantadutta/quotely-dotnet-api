@@ -12,8 +12,18 @@ public class TagDto
     public string Slug { get; set; } = null!;
 
     public int QuoteCount { get; set; }
-    
-    public DateTime DateAdded { get; set; }
-    
-    public DateTime DateModified { get; set; }
+
+    private DateTime _dateAdded;
+    public DateTime DateAdded
+    {
+        get => _dateAdded;
+        set => _dateAdded = DateTime.SpecifyKind(value, DateTimeKind.Utc); // Convert to UTC
+    }
+
+    private DateTime _dateModified;
+    public DateTime DateModified
+    {
+        get => _dateModified;
+        set => _dateModified = DateTime.SpecifyKind(value, DateTimeKind.Utc); // Convert to UTC
+    }
 }

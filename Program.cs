@@ -7,6 +7,8 @@ using quotely_dotnet_api.Configurations;
 using quotely_dotnet_api.Contexts;
 using quotely_dotnet_api.Environment;
 using quotely_dotnet_api.Extensions;
+using quotely_dotnet_api.Interfaces;
+using quotely_dotnet_api.Services;
 using Serilog;
 using Serilog.Debugging;
 
@@ -25,7 +27,8 @@ builder.Host.UseSerilog(
 );
 
 // // Configure Tmdb section and bind it to TmdbConfiguration class
-builder.Configuration
+builder
+    .Configuration
     // only loads variables starting with QUOTELY__
     .AddEnvironmentVariables(s => s.Prefix = "QUOTELY__")
     .Build();
@@ -33,14 +36,15 @@ builder.Configuration
 // var tmdbSection = builder.Configuration.GetSection("TMDB");
 // var omdbSection = builder.Configuration.GetSection("OMDB");
 var pgsqlSection = builder.Configuration.GetSection("PGSQL");
+
 //
 // builder.Services.Configure<TmdbConfiguration>(tmdbSection);
 // builder.Services.Configure<OmdbConfiguration>(omdbSection);
 builder.Services.Configure<PgsqlConfiguration>(pgsqlSection);
 
 // // Add Postgres SQL Db Connection
-builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
 );
 
 // Adding API Versioning
@@ -61,8 +65,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Adding Services
-// builder.Services.AddTransient<ITmdbHttpService, TmdbHttpService>();
-// builder.Services.AddTransient<IOmdbHttpService, OmdbHttpService>();
+builder.Services.AddTransient<IQuotableHttpService, QuotableHttpService>();
+builder.Services.AddTransient<IUtilityService, UtilityService>();
+
 // builder.Services.AddTransient<IMovieBackgroundJobService, MovieBackgroundJobService>();
 // builder.Services.AddTransient<IImageService, ImageService>();
 // builder.Services.AddTransient<IMovieService, MovieService>();
@@ -79,9 +84,8 @@ builder.Services.AddHealthChecks();
 builder.Services.AddHangfire(config =>
 {
     config
-        .UsePostgreSqlStorage(
-            options =>
-                options.UseNpgsqlConnection(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
+        .UsePostgreSqlStorage(options =>
+            options.UseNpgsqlConnection(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
         )
         .WithJobExpirationTimeout(TimeSpan.FromDays(10));
     config.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
