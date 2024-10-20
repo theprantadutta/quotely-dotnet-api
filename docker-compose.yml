@@ -1,0 +1,6 @@
+﻿services:
+  quotely-dotnet-api:
+    image: quotely-dotnet-api
+    build:
+      context: .
+      dockerfile: Dockerfile
