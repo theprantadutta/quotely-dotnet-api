@@ -26,23 +26,17 @@ builder.Host.UseSerilog(
     (context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration)
 );
 
-// // Configure Tmdb section and bind it to TmdbConfiguration class
+// Configure Environment variables
 builder
     .Configuration
     // only loads variables starting with QUOTELY__
     .AddEnvironmentVariables(s => s.Prefix = "QUOTELY__")
     .Build();
 
-// var tmdbSection = builder.Configuration.GetSection("TMDB");
-// var omdbSection = builder.Configuration.GetSection("OMDB");
 var pgsqlSection = builder.Configuration.GetSection("PGSQL");
-
-//
-// builder.Services.Configure<TmdbConfiguration>(tmdbSection);
-// builder.Services.Configure<OmdbConfiguration>(omdbSection);
 builder.Services.Configure<PgsqlConfiguration>(pgsqlSection);
 
-// // Add Postgres SQL Db Connection
+// Add Postgres SQL Db Connection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
 );
@@ -67,6 +61,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Adding Services
 builder.Services.AddTransient<IQuotableHttpService, QuotableHttpService>();
 builder.Services.AddTransient<IUtilityService, UtilityService>();
+builder.Services.AddTransient<IQuoteService, QuoteService>();
+builder.Services.AddTransient<IAuthorService, AuthorService>();
 
 // builder.Services.AddTransient<IMovieBackgroundJobService, MovieBackgroundJobService>();
 // builder.Services.AddTransient<IImageService, ImageService>();
