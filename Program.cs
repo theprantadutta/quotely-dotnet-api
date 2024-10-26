@@ -63,11 +63,7 @@ builder.Services.AddTransient<IQuotableHttpService, QuotableHttpService>();
 builder.Services.AddTransient<IUtilityService, UtilityService>();
 builder.Services.AddTransient<IQuoteService, QuoteService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
-
-// builder.Services.AddTransient<IMovieBackgroundJobService, MovieBackgroundJobService>();
-// builder.Services.AddTransient<IImageService, ImageService>();
-// builder.Services.AddTransient<IMovieService, MovieService>();
-// builder.Services.AddTransient<IMovieProcessorService, MovieProcessorService>();
+builder.Services.AddTransient<ITagService, TagService>();
 
 // Adding Hangfire Configuration
 builder.Services.AddSingleton<HangfireAuthorizationConfiguration>();
