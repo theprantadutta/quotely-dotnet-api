@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace quotely_dotnet_api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace quotely_dotnet_api.Migrations
                 {
                     Id = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Author = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Content = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    Content = table.Column<string>(type: "text", maxLength: 400, nullable: false),
                     Tags = table.Column<string[]>(type: "text[]", nullable: false),
                     AuthorSlug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Length = table.Column<int>(type: "integer", nullable: false),
@@ -63,6 +63,12 @@ namespace quotely_dotnet_api.Migrations
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_Name",
+                table: "Tags",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using quotely_dotnet_api.Entities;
 
 namespace quotely_dotnet_api.Contexts;
@@ -11,4 +10,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Quote> Quotes { get; set; }
     
     public DbSet<Tag> Tags { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Tag Name is unique
+        modelBuilder.Entity<Tag>()
+            .HasIndex(e => e.Name)
+            .IsUnique();
+    }
 }

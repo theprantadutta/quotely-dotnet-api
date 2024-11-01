@@ -19,9 +19,9 @@ public static class HangfireBackgroundJobs
     {
         // Schedule recurring jobs with names
         app.Services.GetRequiredService<IRecurringJobManager>()
-            .AddOrUpdate<GetAllQuoteJob>("GetAllQuoteJob", job => job.Invoke(), Cron.Yearly);
+            .AddOrUpdate<GetAllQuoteJob>("GetAllQuoteJob", job => job.Invoke(), Cron.Monthly);
 
         app.Services.GetRequiredService<IRecurringJobManager>()
-            .AddOrUpdate<GetAllAuthorJob>("GetAllAuthorJob", job => job.Invoke(), Cron.Yearly);
+            .AddOrUpdate<GetAllAuthorJob>("GetAllAuthorJob", job => job.Invoke(), Cron.Monthly);
     }
 }

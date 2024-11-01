@@ -20,14 +20,18 @@ public class UtilityService(AppDbContext appDbContext, ILogger<UtilityService> l
 
     public async Task AddOrUpdateTags(List<string> tagTitles)
     {
-        foreach (var tag in tagTitles)
+        var uniqueTagTitles = tagTitles.Distinct().ToList();
+        foreach (var tag in uniqueTagTitles)
         {
+            _logger.LogInformation("Processing Tag \"{Tag}\"...", tag);
+            
             var existingTag = await _appDbContext
                 .Tags.Where(x => x.Name == tag)
                 .FirstOrDefaultAsync();
 
             if (existingTag == null)
             {
+                _logger.LogInformation("Tag doesn't exist!, Adding Tag \"{Tag}\"...", tag);
                 var nanoId = Ulid.NewUlid().ToString();
                 var newTag = new Tag()
                 {
@@ -42,7 +46,9 @@ public class UtilityService(AppDbContext appDbContext, ILogger<UtilityService> l
             }
             else
             {
+                _logger.LogInformation("Updating Existing Tag \"{Tag}\"...", tag);
                 existingTag.QuoteCount = await GetTotalQuoteCountForTag(existingTag.Name);
+                existingTag.Name = tag;
                 existingTag.DateModified = DateTime.UtcNow;
                 _appDbContext.Entry(existingTag).State = EntityState.Modified;
             }

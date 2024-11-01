@@ -16,7 +16,7 @@ public class TagController(ILogger<QuoteController> logger, ITagService tagServi
         tagService ?? throw new ArgumentNullException(nameof(tagService));
 
     [HttpGet]
-    public async Task<IActionResult> GetAllQuotes(
+    public async Task<IActionResult> GetAllTags(
         int pageNumber = 1,
         int pageSize = 10,
         bool getAllRows = false

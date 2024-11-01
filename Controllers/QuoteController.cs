@@ -20,12 +20,13 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
     public async Task<IActionResult> GetAllQuotes(
         int pageNumber = 1,
         int pageSize = 10,
-        bool getAllRows = false
+        bool getAllRows = false,
+        [FromQuery] List<string>? tags = null
     )
     {
         try
         {
-            return Ok(await _quoteService.GetAllQuotes(pageNumber, pageSize, getAllRows));
+            return Ok(await _quoteService.GetAllQuotes(pageNumber, pageSize, getAllRows, tags));
         }
         catch (Exception e)
         {

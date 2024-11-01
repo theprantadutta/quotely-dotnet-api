@@ -12,8 +12,8 @@ using quotely_dotnet_api.Contexts;
 namespace quotely_dotnet_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241020063607_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241101165217_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,7 @@ namespace quotely_dotnet_api.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("timestamp with time zone");
@@ -137,6 +137,9 @@ namespace quotely_dotnet_api.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });

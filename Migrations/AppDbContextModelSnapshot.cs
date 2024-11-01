@@ -135,6 +135,9 @@ namespace quotely_dotnet_api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Tags");
                 });
 #pragma warning restore 612, 618
