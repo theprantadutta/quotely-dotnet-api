@@ -31,6 +31,7 @@ public class TagService(AppDbContext appDbContext) : ITagService
 
         var query = _appDbContext
             .Tags.AsSplitQuery()
+            .OrderBy(x =>x.DateAdded)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
 

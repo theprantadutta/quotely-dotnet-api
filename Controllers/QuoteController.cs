@@ -15,18 +15,21 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
 
     private readonly IQuoteService _quoteService =
         quoteService ?? throw new ArgumentNullException(nameof(quoteService));
-
+    
     [HttpGet]
     public async Task<IActionResult> GetAllQuotes(
         int pageNumber = 1,
         int pageSize = 10,
         bool getAllRows = false,
-        [FromQuery] List<string>? tags = null
+        [FromQuery] string? tags = null
     )
     {
         try
         {
-            return Ok(await _quoteService.GetAllQuotes(pageNumber, pageSize, getAllRows, tags));
+            // Split the tags string by commas to get a list of tags
+            var tagList = tags?.Split(',').ToList() ?? [];
+
+            return Ok(await _quoteService.GetAllQuotes(pageNumber, pageSize, getAllRows, tagList));
         }
         catch (Exception e)
         {

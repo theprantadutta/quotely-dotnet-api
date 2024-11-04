@@ -12,6 +12,7 @@ public static class HangfireBackgroundJobs
 
         services.AddScoped<GetAllQuoteJob>();
         services.AddScoped<GetAllAuthorJob>();
+        services.AddScoped<GetQuoteOfTheDayJob>();
     }
 
     // This will invoke all background jobs
@@ -23,5 +24,8 @@ public static class HangfireBackgroundJobs
 
         app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<GetAllAuthorJob>("GetAllAuthorJob", job => job.Invoke(), Cron.Monthly);
+
+        app.Services.GetRequiredService<IRecurringJobManager>()
+            .AddOrUpdate<GetQuoteOfTheDayJob>("GetQuoteOfTheDayJob", job => job.Invoke(), Cron.Daily);
     }
 }

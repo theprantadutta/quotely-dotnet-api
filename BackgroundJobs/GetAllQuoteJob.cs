@@ -32,7 +32,7 @@ public class GetAllQuoteJob(
     public async Task Invoke()
     {
         _logger.LogInformation(
-            "Starting the GetAllQuoteJob at {DiscoverMovieJobStartTime}...",
+            "Starting the GetAllQuoteJob at {GetAllQuoteJobStartTime}...",
             DateTime.Now.ToCustomLogDateFormat()
         );
 
@@ -49,11 +49,11 @@ public class GetAllQuoteJob(
                 await Task.Delay(10000);
 
                 // Fetch data from API for the current page
-                var allTagResponseDto = await _quotableHttpService.GetAsync<QuoteDto>(
+                var allQuoteResponseDto = await _quotableHttpService.GetAsync<QuoteDto>(
                     $"quotes?page={currentPage}&limit=150"
                 );
 
-                if (allTagResponseDto == null)
+                if (allQuoteResponseDto == null)
                 {
                     const string msg =
                         "Quotable API returned a null response or failed to map data";
@@ -62,16 +62,16 @@ public class GetAllQuoteJob(
                 }
 
                 // Convert a response object to JSON string
-                var discoverMovieJsonResponse = JsonConvert.SerializeObject(allTagResponseDto);
+                var quotableJsonResponse = JsonConvert.SerializeObject(allQuoteResponseDto);
 
                 // Log the JSON string
                 _logger.LogInformation(
-                    "Quotable Discover API Response: {@DiscoverMovieJsonResponse}",
-                    discoverMovieJsonResponse
+                    "Quotable Discover API Response: {@GetAllQuotableJsonResponse}",
+                    quotableJsonResponse
                 );
 
                 // Save quotes to the database
-                foreach (var quote in allTagResponseDto.Results)
+                foreach (var quote in allQuoteResponseDto.Results)
                 {
                     allTags.AddRange(quote.Tags);
 
@@ -114,7 +114,7 @@ public class GetAllQuoteJob(
                 // Set totalPages from the first response
                 if (currentPage == 1)
                 {
-                    totalPages = allTagResponseDto.TotalPages;
+                    totalPages = allQuoteResponseDto.TotalPages;
                 }
 
                 _logger.LogInformation(
@@ -139,7 +139,7 @@ public class GetAllQuoteJob(
         finally
         {
             _logger.LogInformation(
-                "Finished the GetAllQuoteJob at {DiscoverMovieJobEndTime}...",
+                "Finished the GetAllQuoteJob at {GetAllQuoteJobEndTime}...",
                 DateTime.Now.ToCustomLogDateFormat()
             );
         }

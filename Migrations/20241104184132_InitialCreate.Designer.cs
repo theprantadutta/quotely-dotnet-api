@@ -12,7 +12,7 @@ using quotely_dotnet_api.Contexts;
 namespace quotely_dotnet_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241101165217_InitialCreate")]
+    [Migration("20241104184132_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -110,6 +110,34 @@ namespace quotely_dotnet_api.Migrations
                     b.ToTable("Quotes");
                 });
 
+            modelBuilder.Entity("quotely_dotnet_api.Entities.QuoteOfTheDay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("QuoteDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("QuoteId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuotesOfTheDays");
+                });
+
             modelBuilder.Entity("quotely_dotnet_api.Entities.Tag", b =>
                 {
                     b.Property<string>("Id")
@@ -142,6 +170,56 @@ namespace quotely_dotnet_api.Migrations
                         .IsUnique();
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("quotely_dotnet_api.Views.QuoteOfTheDayWithQuote", b =>
+                {
+                    b.Property<int>("QuoteOfTheDayId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AuthorSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("QuoteDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("QuoteDateAdded")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("QuoteDateModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("QuoteId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("QuoteOfTheDayDateAdded")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("QuoteOfTheDayDateModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string[]>("Tags")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("QuoteOfTheDayId");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("View_QuoteOfTheDayWithQuote", (string)null);
                 });
 #pragma warning restore 612, 618
         }

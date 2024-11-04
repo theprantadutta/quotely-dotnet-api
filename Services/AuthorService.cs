@@ -34,7 +34,9 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
         var totalItemCount = await _appDbContext.Authors.CountAsync();
 
         var query = _appDbContext
-            .Authors.AsSplitQuery()
+            .Authors
+            .OrderBy(_ => Guid.NewGuid()) 
+            .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
 
@@ -51,4 +53,5 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
             }
         };
     }
+
 }

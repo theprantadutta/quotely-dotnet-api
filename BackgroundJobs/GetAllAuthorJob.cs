@@ -26,7 +26,7 @@ public class GetAllAuthorJob(
     public async Task Invoke()
     {
         _logger.LogInformation(
-            "Starting the GetAllAuthorJob at {DiscoverMovieJobStartTime}...",
+            "Starting the GetAllAuthorJob at {GetAllQuoteJobStartTime}...",
             DateTime.Now.ToCustomLogDateFormat()
         );
 
@@ -41,11 +41,11 @@ public class GetAllAuthorJob(
                 await Task.Delay(10000);
 
                 // Fetch data from API for the current page
-                var allTagResponseDto = await _quotableHttpService.GetAsync<AuthorDto>(
+                var allAuthorResponseDto = await _quotableHttpService.GetAsync<AuthorDto>(
                     $"authors?page={currentPage}&limit=150"
                 );
 
-                if (allTagResponseDto == null)
+                if (allAuthorResponseDto == null)
                 {
                     const string msg =
                         "Quotable API returned a null response or failed to map data";
@@ -54,16 +54,16 @@ public class GetAllAuthorJob(
                 }
 
                 // Convert a response object to JSON string
-                var discoverMovieJsonResponse = JsonConvert.SerializeObject(allTagResponseDto);
+                var authorJsonResponse = JsonConvert.SerializeObject(allAuthorResponseDto);
 
                 // Log the JSON string
                 _logger.LogInformation(
                     "Quotable Discover API Response: {@DiscoverMovieJsonResponse}",
-                    discoverMovieJsonResponse
+                    authorJsonResponse
                 );
 
                 // Save quotes to the database
-                foreach (var authorDto in allTagResponseDto.Results)
+                foreach (var authorDto in allAuthorResponseDto.Results)
                 {
                     var existingAuthor = await _appDbContext
                         .Authors.Where(x => x.Id == authorDto.Id)
@@ -106,7 +106,7 @@ public class GetAllAuthorJob(
                 // Set totalPages from the first response
                 if (currentPage == 1)
                 {
-                    totalPages = allTagResponseDto.TotalPages;
+                    totalPages = allAuthorResponseDto.TotalPages;
                 }
 
                 _logger.LogInformation(
@@ -131,7 +131,7 @@ public class GetAllAuthorJob(
         finally
         {
             _logger.LogInformation(
-                "Finished the GetAllAuthorJob at {DiscoverMovieJobEndTime}...",
+                "Finished the GetAllAuthorJob at {GetAllQuoteJobEndTime}...",
                 DateTime.Now.ToCustomLogDateFormat()
             );
         }

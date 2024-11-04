@@ -64,6 +64,7 @@ builder.Services.AddTransient<IUtilityService, UtilityService>();
 builder.Services.AddTransient<IQuoteService, QuoteService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
 builder.Services.AddTransient<ITagService, TagService>();
+builder.Services.AddTransient<IQuoteOfTheDayService, QuoteOfTheDayService>();
 
 // Adding Hangfire Configuration
 builder.Services.AddSingleton<HangfireAuthorizationConfiguration>();
