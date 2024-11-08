@@ -20,7 +20,10 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
     {
         if (getAllRows)
         {
-            var allQuoteOfTheDayWithQuotes = await _appDbContext.QuoteOfTheDayWithQuotes.ToListAsync();
+            var allQuoteOfTheDayWithQuotes = await _appDbContext
+                .QuoteOfTheDayWithQuotes
+                .OrderBy(x => x.QuoteDate)
+                .ToListAsync();
             return new QuoteOfTheDayResponseDto()
             {
                 QuoteOfTheDayWithQuotes = allQuoteOfTheDayWithQuotes,
@@ -32,18 +35,18 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
                 }
             };
         }
-
+    
         var totalItemCount = await _appDbContext.QuoteOfTheDayWithQuotes.CountAsync();
-
+    
         var query = _appDbContext
             .QuoteOfTheDayWithQuotes
-            .OrderBy(_ => Guid.NewGuid()) 
+            .OrderByDescending(x => x.QuoteDate) 
             .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
-
+    
         var allQuoteOfTheDay = await query.ToListAsync();
-
+    
         return new QuoteOfTheDayResponseDto()
         {
             QuoteOfTheDayWithQuotes = allQuoteOfTheDay,
@@ -54,5 +57,21 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
                 TotalItemCount = totalItemCount
             }
         };
+    }
+
+
+    public async Task<QuoteOfTheDayWithQuote> GetTodayQuoteOfTheDay()
+    {
+        var todayQuoteOfTheDay = await _appDbContext
+            .QuoteOfTheDayWithQuotes
+            .Where(x => x.QuoteDate.Date == DateTime.UtcNow.Date)
+            .FirstOrDefaultAsync();
+
+        if (todayQuoteOfTheDay == null)
+        {
+            throw new Exception("No Quote Found For Today");
+        }
+
+        return todayQuoteOfTheDay;
     }
 }

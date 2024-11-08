@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using quotely_dotnet_api.Contexts;
 using quotely_dotnet_api.Dtos;
+using quotely_dotnet_api.Entities;
 using quotely_dotnet_api.Interfaces;
 
 namespace quotely_dotnet_api.Services;
@@ -13,12 +14,21 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
     public async Task<AuthorResponseDto> GetAllAuthors(
         int pageNumber,
         int pageSize,
-        bool getAllRows
+        bool getAllRows,
+        string? search
     )
     {
+        IQueryable<Author> query = _appDbContext.Authors;
+
+        // Apply search filter if search term is provided
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(a => a.Name.ToLower().Contains(search.ToLower()));
+        }
+
         if (getAllRows)
         {
-            var allAuthorRows = await _appDbContext.Authors.ToListAsync();
+            var allAuthorRows = await query.ToListAsync();
             return new AuthorResponseDto()
             {
                 Authors = allAuthorRows,
@@ -31,20 +41,19 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
             };
         }
 
-        var totalItemCount = await _appDbContext.Authors.CountAsync();
+        var totalItemCount = await query.CountAsync();
 
-        var query = _appDbContext
-            .Authors
-            .OrderBy(_ => Guid.NewGuid()) 
+        query = query
+            .OrderBy(a => a.Name) // Change ordering as needed
             .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);
 
-        var allAuthors = await query.ToListAsync();
+        var paginatedAuthors = await query.ToListAsync();
 
         return new AuthorResponseDto()
         {
-            Authors = allAuthors,
+            Authors = paginatedAuthors,
             Pagination = new PaginationDto()
             {
                 PageNumber = pageNumber,
@@ -53,5 +62,4 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
             }
         };
     }
-
 }

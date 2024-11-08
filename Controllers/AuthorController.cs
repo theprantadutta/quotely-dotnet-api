@@ -18,6 +18,7 @@ public class AuthorController(ILogger<AuthorController> logger, IAuthorService a
 
     [HttpGet]
     public async Task<IActionResult> GetAllAuthors(
+        string? search,
         int pageNumber = 1,
         int pageSize = 10,
         bool getAllRows = false
@@ -25,7 +26,7 @@ public class AuthorController(ILogger<AuthorController> logger, IAuthorService a
     {
         try
         {
-            return Ok(await _authorService.GetAllAuthors(pageNumber, pageSize, getAllRows));
+            return Ok(await _authorService.GetAllAuthors(pageNumber, pageSize, getAllRows, search));
         }
         catch (Exception e)
         {

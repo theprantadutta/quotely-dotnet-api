@@ -4,5 +4,8 @@ namespace quotely_dotnet_api.Interfaces;
 
 public interface IAuthorService
 {
-    Task<AuthorResponseDto> GetAllAuthors(int pageNumber, int pageSize, bool getAllRows);
+    Task<AuthorResponseDto> GetAllAuthors(int pageNumber, 
+        int pageSize, 
+        bool getAllRows,
+        string? search);
 }
