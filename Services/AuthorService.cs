@@ -26,6 +26,8 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
             query = query.Where(a => a.Name.ToLower().Contains(search.ToLower()));
         }
 
+        query = query.OrderBy(_ => Guid.NewGuid());
+
         if (getAllRows)
         {
             var allAuthorRows = await query.ToListAsync();
@@ -44,7 +46,6 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
         var totalItemCount = await query.CountAsync();
 
         query = query
-            .OrderBy(a => a.Name) // Change ordering as needed
             .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize);

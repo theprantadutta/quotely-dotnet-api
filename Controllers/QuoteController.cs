@@ -37,4 +37,23 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
             throw;
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllQuotesByAuthor(
+        string authorSlug,
+        int pageNumber = 1,
+        int pageSize = 10,
+        bool getAllRows = false
+    )
+    {
+        try
+        {
+            return Ok(await _quoteService.GetAllQuotesByAuthor(authorSlug, pageNumber, pageSize, getAllRows));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Something Went Wrong When Getting Quotes By Author");
+            throw;
+        }
+    }
 }

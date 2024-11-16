@@ -58,4 +58,48 @@ public class QuoteService(AppDbContext appDbContext) : IQuoteService
             }
         };
     }
+
+    public async Task<QuoteResponseDto> GetAllQuotesByAuthor(string authorSlug, int pageNumber, int pageSize, bool getAllRows)
+    {
+        var query = _appDbContext.Quotes
+            .Where(x => x.AuthorSlug == authorSlug)
+            .AsQueryable();
+    
+        // Apply random ordering (consider the performance implications)
+        query = query.OrderBy(_ => Guid.NewGuid());
+    
+        if (getAllRows)
+        {
+            var allQuoteRows = await query.ToListAsync();
+            return new QuoteResponseDto()
+            {
+                Quotes = allQuoteRows,
+                Pagination = new PaginationDto()
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    TotalItemCount = allQuoteRows.Count,
+                }
+            };
+        }
+    
+        var totalItemCount = await query.CountAsync();
+    
+        // Apply pagination
+        var paginatedQuotes = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    
+        return new QuoteResponseDto()
+        {
+            Quotes = paginatedQuotes,
+            Pagination = new PaginationDto()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItemCount = totalItemCount
+            }
+        };
+    }
 }
