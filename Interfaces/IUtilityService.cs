@@ -7,4 +7,6 @@ public interface IUtilityService
     Task AddOrUpdateTags(List<string> tagTitles);
 
     RecurringJobDto GetJob(string jobId);
+
+    Task<string?> GetWikipediaThumbnailAsync(string url);
 }

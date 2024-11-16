@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using System.Text.Json;
+using Hangfire;
 using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
 using NUlid;
@@ -83,5 +84,43 @@ public class UtilityService(AppDbContext appDbContext, ILogger<UtilityService> l
             .CountAsync();
 
         return count;
+    }
+    
+    public async Task<string?> GetWikipediaThumbnailAsync(string url)
+    {
+        try
+        {
+            // Extract the title from the URL
+            var uri = new Uri(url);
+            var title = uri.Segments[^1];
+
+            // Wikipedia API endpoint
+            var apiEndpoint = $"https://en.wikipedia.org/w/api.php?action=query&titles={title}&prop=pageimages&format=json&pithumbsize=100";
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync(apiEndpoint);
+
+            // Parse the JSON response
+            using var jsonDoc = JsonDocument.Parse(response);
+            var root = jsonDoc.RootElement;
+
+            // Navigate JSON to find the thumbnail URL
+            var pages = root.GetProperty("query").GetProperty("pages").EnumerateObject();
+            foreach (var page in pages)
+            {
+                if (!page.Value.TryGetProperty("thumbnail", out var thumbnail)) continue;
+                if (thumbnail.TryGetProperty("source", out var thumbnailUrl))
+                {
+                    return thumbnailUrl.GetString();
+                }
+            }
+
+            return "Thumbnail not found.";
+        }
+        catch (Exception ex)
+        { 
+            _logger.LogError(ex, "Something Went Wrong getting image url from wiki");
+            return null;
+        }
     }
 }

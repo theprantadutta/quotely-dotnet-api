@@ -11,8 +11,7 @@ namespace quotely_dotnet_api.BackgroundJobs;
 public class GetAllAuthorJob(
     IQuotableHttpService quotableHttpService,
     AppDbContext appDbContext,
-    ILogger<GetAllAuthorJob> logger,
-    IUtilityService utilityService
+    ILogger<GetAllAuthorJob> logger
 )
 {
     private readonly AppDbContext _appDbContext =
@@ -23,9 +22,6 @@ public class GetAllAuthorJob(
 
     private readonly IQuotableHttpService _quotableHttpService =
         quotableHttpService ?? throw new ArgumentNullException(nameof(quotableHttpService));
-
-    private readonly IUtilityService _utilityService =
-        utilityService ?? throw new ArgumentNullException(nameof(utilityService));
 
     public async Task Invoke()
     {
@@ -73,9 +69,6 @@ public class GetAllAuthorJob(
                         .Authors.Where(x => x.Id == authorDto.Id)
                         .FirstOrDefaultAsync();
 
-                    var imageLink = await _utilityService
-                        .GetWikipediaThumbnailAsync(authorDto.Link);
-
                     if (existingAuthor == null)
                     {
                         var newAuthor = new Author()
@@ -86,7 +79,6 @@ public class GetAllAuthorJob(
                             Slug = authorDto.Slug,
                             Description = authorDto.Description,
                             Link = authorDto.Link,
-                            ImageUrl = imageLink,
                             QuoteCount = authorDto.QuoteCount,
                             DateAdded = authorDto.DateAdded,
                             DateModified = authorDto.DateModified
@@ -100,7 +92,6 @@ public class GetAllAuthorJob(
                         existingAuthor.Slug = authorDto.Slug;
                         existingAuthor.Description = authorDto.Description;
                         existingAuthor.Link = authorDto.Link;
-                        existingAuthor.ImageUrl = imageLink;
                         existingAuthor.QuoteCount = authorDto.QuoteCount;
                         existingAuthor.DateAdded = authorDto.DateAdded;
                         existingAuthor.DateModified = authorDto.DateModified;
