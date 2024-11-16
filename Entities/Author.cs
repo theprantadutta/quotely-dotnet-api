@@ -27,7 +27,7 @@ public class Author
     [MaxLength(200)] 
     public string Slug { get; set; } = null!;
 
-    [MaxLength(200)] public string? ImageUrl { get; set; }
+    [Column(TypeName = "text")] public string? ImageUrl { get; set; }
     
     public DateTime DateAdded { get; set; }
     
