@@ -115,7 +115,7 @@ public class UtilityService(AppDbContext appDbContext, ILogger<UtilityService> l
                 }
             }
 
-            return "Thumbnail not found.";
+            return null;
         }
         catch (Exception ex)
         { 
