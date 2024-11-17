@@ -29,10 +29,4 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
         <PackageReference Include="Slugify.Core" Version="4.0.1" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="Sensitive\**" CopyToPublishDirectory="PreserveNewest"/>
-    </ItemGroup>
-
-
 </Project>
