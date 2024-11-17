@@ -65,6 +65,7 @@ builder.Services.AddTransient<IQuoteService, QuoteService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
 builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IQuoteOfTheDayService, QuoteOfTheDayService>();
+builder.Services.AddTransient<IFirebaseMessagingClient, FirebaseMessagingClient>();
 
 // Adding Hangfire Configuration
 builder.Services.AddSingleton<HangfireAuthorizationConfiguration>();

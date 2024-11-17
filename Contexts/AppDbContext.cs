@@ -12,6 +12,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     
     public DbSet<QuoteOfTheDay> QuotesOfTheDays { get; set; }
     
+    public DbSet<MotivationMonday> MotivationMondays { get; set; }
+    
+    public DbSet<DailyInspiration> DailyInspirations { get; set; }
+    
     public DbSet<Tag> Tags { get; set; }
     
     // Read-only DbSet for the view

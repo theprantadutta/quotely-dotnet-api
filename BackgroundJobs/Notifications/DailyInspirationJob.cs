@@ -2,43 +2,47 @@
 using quotely_dotnet_api.Contexts;
 using quotely_dotnet_api.Entities;
 using quotely_dotnet_api.Extensions;
+using quotely_dotnet_api.Interfaces;
 
-namespace quotely_dotnet_api.BackgroundJobs;
+namespace quotely_dotnet_api.BackgroundJobs.Notifications;
 
-public class GetQuoteOfTheDayJob(
+public class DailyInspirationJob(
     AppDbContext appDbContext,
-    ILogger<GetQuoteOfTheDayJob> logger)
+    ILogger<DailyInspirationJob> logger,
+    IFirebaseMessagingClient firebaseMessagingClient)
 {
     private readonly AppDbContext _appDbContext =
         appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
 
-    private readonly ILogger<GetQuoteOfTheDayJob> _logger =
+    private readonly ILogger<DailyInspirationJob> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
+    private readonly IFirebaseMessagingClient _firebaseMessagingClient =
+        firebaseMessagingClient ?? throw new ArgumentNullException(nameof(firebaseMessagingClient));
+    
     public async Task Invoke()
     {
         _logger.LogInformation(
-            "Starting the GetQuoteOfTheDayJob at {GetQuoteOfTheDayJobStartTime}...",
+            "Starting the DailyInspirationJob at {DailyInspirationJobStartTime}...",
             DateTime.Now.ToCustomLogDateFormat()
         );
-
         try
         {
             // Check if a quote for today has already been generated
             var today = DateTime.UtcNow.Date;
-            var todayQuote = await _appDbContext.QuotesOfTheDays
+            var todayQuote = await _appDbContext.DailyInspirations
                 .Where(x => x.QuoteDate.Date == today)
                 .FirstOrDefaultAsync();
 
             if (todayQuote != null)
             {
-                _logger.LogInformation("A quote for today already exists with ID {QuoteId}", todayQuote.QuoteId);
+                _logger.LogInformation("A daily inspiration quote for today already exists with ID {QuoteId}", todayQuote.QuoteId);
                 return; // Exit if a quote has already been generated for today
             }
 
             // Get a random quote from the database that has not been used as the quote of the day
             Quote? randomQuote;
-            QuoteOfTheDay? existingQuoteOfTheDay;
+            DailyInspiration? existingMotivationMonday;
 
             do
             {
@@ -53,12 +57,12 @@ public class GetQuoteOfTheDayJob(
                 }
 
                 // Check if this quote is already in the quote of the day table
-                existingQuoteOfTheDay = await _appDbContext.QuotesOfTheDays
+                existingMotivationMonday = await _appDbContext.DailyInspirations
                     // ReSharper disable once AccessToModifiedClosure
                     .Where(x => x.QuoteId == randomQuote.Id)
                     .FirstOrDefaultAsync();
 
-                if (existingQuoteOfTheDay != null)
+                if (existingMotivationMonday != null)
                 {
                     _logger.LogInformation(
                         "Randomly selected quote with ID {QuoteId} has already been used as Quote of the Day. Retrying...",
@@ -66,10 +70,10 @@ public class GetQuoteOfTheDayJob(
                     );
                 }
 
-            } while (existingQuoteOfTheDay != null);
+            } while (existingMotivationMonday != null);
 
             // Now, randomQuote contains a quote that is not in the quote of the day
-            await _appDbContext.QuotesOfTheDays.AddAsync(new QuoteOfTheDay
+            await _appDbContext.DailyInspirations.AddAsync(new DailyInspiration
             {
                 QuoteId = randomQuote.Id,
                 QuoteDate = DateTime.UtcNow,
@@ -78,17 +82,25 @@ public class GetQuoteOfTheDayJob(
             });
 
             await _appDbContext.SaveChangesAsync();
-            _logger.LogInformation("GetQuoteOfTheDayJob executed successfully with new Quote ID {QuoteId}", randomQuote.Id);
+
+            await _firebaseMessagingClient.SendNotification(
+                "daily-inspiration",
+                "Daily Inspiration",
+                $"{randomQuote.Content} - '{randomQuote.Author}'", 
+                new Dictionary<string, string>()
+                );
+                
+            _logger.LogInformation("DailyInspirationJob executed successfully with new Quote ID {QuoteId}", randomQuote.Id);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An error occurred while executing GetQuoteOfTheDayJob");
+            _logger.LogError(e, "An error occurred while executing DailyInspirationJob");
             throw;
         }
         finally
         {
             _logger.LogInformation(
-                "Finished the GetQuoteOfTheDayJob at {GetQuoteOfTheDayJobEndTime}...",
+                "Finished the DailyInspirationJob at {DailyInspirationJobEndTime}...",
                 DateTime.Now.ToCustomLogDateFormat()
             );
         }
