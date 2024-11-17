@@ -15,6 +15,7 @@ public static class HangfireBackgroundJobs
         services.AddScoped<GetAllQuoteJob>();
         services.AddScoped<GetAllAuthorJob>();
         
+        // Notifications System
         services.AddScoped<GetQuoteOfTheDayJob>();
         services.AddScoped<DailyInspirationJob>();
         services.AddScoped<MotivationMondayJob>();
