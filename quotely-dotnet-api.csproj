@@ -30,4 +30,9 @@
         <PackageReference Include="Slugify.Core" Version="4.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="Sensitive\**" CopyToPublishDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+
 </Project>
