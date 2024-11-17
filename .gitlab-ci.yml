@@ -10,7 +10,7 @@ deploy-job:
   before_script:
     - mkdir -p "$PROJECT_PATH"
   script:
-    - sudo find "$PROJECT_PATH" -mindepth 1 -maxdepth 1 ! -name ".env" -exec rm -rf {} + # DELETE ALL FILES FIRST EXCEPT .env FILE
+    - sudo find "$PROJECT_PATH" -mindepth 1 -maxdepth 1 ! -name ".env" ! -name "Sensitive" -exec rm -rf {} +  # DELETE ALL FILES FIRST EXCEPT .env FILE
     - sudo cp -r * "$PROJECT_PATH" # COPY ALL FILES FROM CURRENT GITLAB DIRECTORY TO THE PROJECT PATH
   only:
     - master
