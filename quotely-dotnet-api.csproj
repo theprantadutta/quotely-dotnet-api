@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>quotely_dotnet_api</RootNamespace>
@@ -11,22 +11,23 @@
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0"/>
         <PackageReference Include="AutoMapper" Version="13.0.1"/>
-        <PackageReference Include="DotNetEnv" Version="3.0.0"/>
+        <PackageReference Include="DotNetEnv" Version="3.1.1" />
         <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12"/>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.15" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" Version="1.0.2"/>
-        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.8"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
         <PackageReference Include="NUlid" Version="1.7.2" />
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="Slugify.Core" Version="4.0.1" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0" />
     </ItemGroup>
 </Project>
