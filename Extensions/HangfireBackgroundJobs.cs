@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using quotely_dotnet_api.BackgroundJobs;
 using quotely_dotnet_api.BackgroundJobs.Notifications;
+using quotely_dotnet_api.Constants;
 
 namespace quotely_dotnet_api.Extensions;
 
@@ -23,21 +24,34 @@ public static class HangfireBackgroundJobs
     // This will invoke all background jobs
     public static void UseHangfireBackgroundJobs(this WebApplication app)
     {
+        var defaultJobOptions = BackgroundJobConstants.JobOptions;
+
         // Schedule recurring jobs with names
         app.Services
             .GetRequiredService<IRecurringJobManager>()
-            .AddOrUpdate<GetAllQuoteJob>("GetAllQuoteJob", job => job.Invoke(), Cron.Monthly);
+            .AddOrUpdate<GetAllQuoteJob>(
+                "GetAllQuoteJob",
+                job => job.Invoke(),
+                Cron.Monthly,
+                defaultJobOptions
+            );
 
         app.Services
             .GetRequiredService<IRecurringJobManager>()
-            .AddOrUpdate<GetAllAuthorJob>("GetAllAuthorJob", job => job.Invoke(), Cron.Monthly);
+            .AddOrUpdate<GetAllAuthorJob>(
+                "GetAllAuthorJob",
+                job => job.Invoke(),
+                Cron.Monthly,
+                defaultJobOptions
+            );
 
         app.Services
             .GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<GetQuoteOfTheDayJob>(
                 "GetQuoteOfTheDayJob",
                 job => job.Invoke(),
-                Cron.Daily
+                Cron.Daily,
+                defaultJobOptions
             );
 
         app.Services
@@ -45,7 +59,8 @@ public static class HangfireBackgroundJobs
             .AddOrUpdate<DailyInspirationJob>(
                 "DailyInspirationJob",
                 job => job.Invoke(),
-                "0 11 * * *"
+                "0 11 * * *",
+                defaultJobOptions
             );
 
         app.Services
@@ -53,7 +68,8 @@ public static class HangfireBackgroundJobs
             .AddOrUpdate<MotivationMondayJob>(
                 "MotivationMondayJob",
                 job => job.Invoke(),
-                "0 10 * * 1"
+                "0 10 * * 1",
+                defaultJobOptions
             );
 
         app.Services
@@ -61,7 +77,8 @@ public static class HangfireBackgroundJobs
             .AddOrUpdate<SendRandomNotificationJob>(
                 "SendRandomNotificationJob",
                 job => job.Invoke(),
-                Cron.Weekly
+                Cron.Weekly,
+                defaultJobOptions
             );
     }
 }
