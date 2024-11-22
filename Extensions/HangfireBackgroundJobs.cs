@@ -45,7 +45,7 @@ public static class HangfireBackgroundJobs
             .AddOrUpdate<DailyInspirationJob>(
                 "DailyInspirationJob",
                 job => job.Invoke(),
-                "0 11 * * 1"
+                "0 11 * * *"
             );
 
         app.Services
