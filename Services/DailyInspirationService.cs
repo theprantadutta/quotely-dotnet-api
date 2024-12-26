@@ -6,12 +6,12 @@ using quotely_dotnet_api.Views;
 
 namespace quotely_dotnet_api.Services;
 
-public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDayService
+public class DailyInspirationService(AppDbContext appDbContext) : IDailyInspirationService
 {
     private readonly AppDbContext _appDbContext =
         appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
 
-    public async Task<QuoteOfTheDayResponseDto> GetAllQuoteOfTheDay(
+    public async Task<DailyInspirationResponseDto> GetAllDailyInspiration(
         int pageNumber,
         int pageSize,
         bool getAllRows
@@ -19,24 +19,24 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
     {
         if (getAllRows)
         {
-            var allQuoteOfTheDayWithQuotes = await _appDbContext.QuoteOfTheDayWithQuotes
+            var allDailyInspirationWithQuotes = await _appDbContext.DailyInspirationWithQuotes
                 .OrderBy(x => x.QuoteDate)
                 .ToListAsync();
-            return new QuoteOfTheDayResponseDto()
+            return new DailyInspirationResponseDto()
             {
-                QuoteOfTheDayWithQuotes = allQuoteOfTheDayWithQuotes,
-                Pagination = new PaginationDto()
+                DailyInspirationWithQuotes = allDailyInspirationWithQuotes,
+                Pagination = new PaginationDto
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
-                    TotalItemCount = allQuoteOfTheDayWithQuotes.Count,
+                    TotalItemCount = allDailyInspirationWithQuotes.Count,
                 }
             };
         }
 
         var totalItemCount = await _appDbContext.QuoteOfTheDayWithQuotes.CountAsync();
 
-        var query = _appDbContext.QuoteOfTheDayWithQuotes
+        var query = _appDbContext.DailyInspirationWithQuotes
             .OrderByDescending(x => x.QuoteDate)
             .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
@@ -44,9 +44,9 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
 
         var allQuoteOfTheDay = await query.ToListAsync();
 
-        return new QuoteOfTheDayResponseDto()
+        return new DailyInspirationResponseDto()
         {
-            QuoteOfTheDayWithQuotes = allQuoteOfTheDay,
+            DailyInspirationWithQuotes = allQuoteOfTheDay,
             Pagination = new PaginationDto()
             {
                 PageNumber = pageNumber,
@@ -56,17 +56,17 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
         };
     }
 
-    public async Task<QuoteOfTheDayWithQuote> GetTodayQuoteOfTheDay()
+    public async Task<DailyInspirationWithQuote> GetTodayDailyInspiration()
     {
-        var todayQuoteOfTheDay = await _appDbContext.QuoteOfTheDayWithQuotes
+        var todaysInspiration = await _appDbContext.DailyInspirationWithQuotes
             .Where(x => x.QuoteDate.Date == DateTime.UtcNow.Date)
             .FirstOrDefaultAsync();
 
-        if (todayQuoteOfTheDay == null)
+        if (todaysInspiration == null)
         {
-            throw new Exception("No Quote Found For Today");
+            throw new Exception("No Daily Inspiration Found For Today");
         }
 
-        return todayQuoteOfTheDay;
+        return todaysInspiration;
     }
 }

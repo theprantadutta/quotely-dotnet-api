@@ -22,17 +22,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     // Read-only DbSet for the view
     public DbSet<QuoteOfTheDayWithQuote> QuoteOfTheDayWithQuotes { get; set; }
+    public DbSet<MotivationMondayWithQuote> MotivationMondayWithQuotes { get; set; }
+    public DbSet<DailyInspirationWithQuote> DailyInspirationWithQuotes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Tag Name is unique
         modelBuilder.Entity<Tag>().HasIndex(e => e.Name).IsUnique();
 
-        // Map the view to the model
+        // Map the view to the models
         modelBuilder
             .Entity<QuoteOfTheDayWithQuote>()
-            .HasNoKey() // Views typically do not have primary keys
-            .ToView("View_QuoteOfTheDayWithQuote") // Specify the name of the view
+            .HasNoKey() // View do not have primary keys
+            .ToView("View_QuoteOfTheDayWithQuote") //  the name of the view
             .HasKey(q => q.QuoteOfTheDayId);
+
+        modelBuilder
+            .Entity<DailyInspirationWithQuote>()
+            .HasNoKey() // View do not have primary keys
+            .ToView("View_DailyInspirationWithQuote") //  the name of the view
+            .HasKey(q => q.DailyInspirationId);
+
+        modelBuilder
+            .Entity<MotivationMondayWithQuote>()
+            .HasNoKey() // View do not have primary keys
+            .ToView("View_MotivationMondayWithQuote") //  the name of the view
+            .HasKey(q => q.MotivationMondayId);
     }
 }

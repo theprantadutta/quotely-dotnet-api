@@ -59,7 +59,7 @@ public static class HangfireBackgroundJobs
             .AddOrUpdate<DailyInspirationJob>(
                 "DailyInspirationJob",
                 job => job.Invoke(),
-                "0 11 * * *",
+                Cron.Daily,
                 defaultJobOptions
             );
 

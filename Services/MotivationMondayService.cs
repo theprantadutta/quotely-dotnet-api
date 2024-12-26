@@ -6,12 +6,12 @@ using quotely_dotnet_api.Views;
 
 namespace quotely_dotnet_api.Services;
 
-public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDayService
+public class MotivationMondayService(AppDbContext appDbContext) : IMotivationMondayService
 {
     private readonly AppDbContext _appDbContext =
         appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
 
-    public async Task<QuoteOfTheDayResponseDto> GetAllQuoteOfTheDay(
+    public async Task<MotivationMondayResponseDto> GetAllMotivationMonday(
         int pageNumber,
         int pageSize,
         bool getAllRows
@@ -19,24 +19,24 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
     {
         if (getAllRows)
         {
-            var allQuoteOfTheDayWithQuotes = await _appDbContext.QuoteOfTheDayWithQuotes
+            var allMotivationMondayWithQuotes = await _appDbContext.MotivationMondayWithQuotes
                 .OrderBy(x => x.QuoteDate)
                 .ToListAsync();
-            return new QuoteOfTheDayResponseDto()
+            return new MotivationMondayResponseDto()
             {
-                QuoteOfTheDayWithQuotes = allQuoteOfTheDayWithQuotes,
-                Pagination = new PaginationDto()
+                MotivationMondayWithQuotes = allMotivationMondayWithQuotes,
+                Pagination = new PaginationDto
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
-                    TotalItemCount = allQuoteOfTheDayWithQuotes.Count,
+                    TotalItemCount = allMotivationMondayWithQuotes.Count,
                 }
             };
         }
 
         var totalItemCount = await _appDbContext.QuoteOfTheDayWithQuotes.CountAsync();
 
-        var query = _appDbContext.QuoteOfTheDayWithQuotes
+        var query = _appDbContext.MotivationMondayWithQuotes
             .OrderByDescending(x => x.QuoteDate)
             .AsSplitQuery()
             .Skip((pageNumber - 1) * pageSize)
@@ -44,9 +44,9 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
 
         var allQuoteOfTheDay = await query.ToListAsync();
 
-        return new QuoteOfTheDayResponseDto()
+        return new MotivationMondayResponseDto()
         {
-            QuoteOfTheDayWithQuotes = allQuoteOfTheDay,
+            MotivationMondayWithQuotes = allQuoteOfTheDay,
             Pagination = new PaginationDto()
             {
                 PageNumber = pageNumber,
@@ -56,17 +56,17 @@ public class QuoteOfTheDayService(AppDbContext appDbContext) : IQuoteOfTheDaySer
         };
     }
 
-    public async Task<QuoteOfTheDayWithQuote> GetTodayQuoteOfTheDay()
+    public async Task<MotivationMondayWithQuote> GetTodayMotivationMonday()
     {
-        var todayQuoteOfTheDay = await _appDbContext.QuoteOfTheDayWithQuotes
-            .Where(x => x.QuoteDate.Date == DateTime.UtcNow.Date)
+        var motivationMonday = await _appDbContext.MotivationMondayWithQuotes
+            .OrderByDescending(x => x.QuoteDate)
             .FirstOrDefaultAsync();
 
-        if (todayQuoteOfTheDay == null)
+        if (motivationMonday == null)
         {
-            throw new Exception("No Quote Found For Today");
+            throw new Exception("No MotivationMonday Found For Today");
         }
 
-        return todayQuoteOfTheDay;
+        return motivationMonday;
     }
 }

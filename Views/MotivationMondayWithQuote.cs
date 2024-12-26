@@ -1,11 +1,11 @@
 ﻿namespace quotely_dotnet_api.Views;
 
-public class QuoteOfTheDayWithQuote
+public class MotivationMondayWithQuote
 {
-    public int QuoteOfTheDayId { get; set; }
+    public int MotivationMondayId { get; set; }
     public DateTime QuoteDate { get; set; }
-    public DateTime QuoteOfTheDayDateAdded { get; set; }
-    public DateTime QuoteOfTheDayDateModified { get; set; }
+    public DateTime MotivationMondayDateAdded { get; set; }
+    public DateTime MotivationMondayDateModified { get; set; }
 
     public string QuoteId { get; set; } = null!;
     public string Author { get; set; } = null!;

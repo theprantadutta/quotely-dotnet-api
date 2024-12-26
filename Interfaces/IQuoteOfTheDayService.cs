@@ -1,5 +1,4 @@
 ﻿using quotely_dotnet_api.Dtos;
-using quotely_dotnet_api.Entities;
 using quotely_dotnet_api.Views;
 
 namespace quotely_dotnet_api.Interfaces;
