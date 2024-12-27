@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using quotely_dotnet_api.Contexts;
@@ -11,9 +12,11 @@ using quotely_dotnet_api.Contexts;
 namespace quotely_dotnet_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241227054829_AddedApplicationInfo")]
+    partial class AddedApplicationInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +24,6 @@ namespace quotely_dotnet_api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("quotely_dotnet_api.Entities.ApplicationInfo", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnOrder(0);
-
-                    b.Property<string>("AppUpdateUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CurrentVersion")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("MaintenanceBreak")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationInfos");
-                });
 
             modelBuilder.Entity("quotely_dotnet_api.Entities.Author", b =>
                 {

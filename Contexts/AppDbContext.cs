@@ -20,6 +20,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<Tag> Tags { get; set; }
 
+    public DbSet<ApplicationInfo> ApplicationInfos { get; set; }
+
     // Read-only DbSet for the view
     public DbSet<QuoteOfTheDayWithQuote> QuoteOfTheDayWithQuotes { get; set; }
     public DbSet<MotivationMondayWithQuote> MotivationMondayWithQuotes { get; set; }
