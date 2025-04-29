@@ -27,6 +27,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<MotivationMondayWithQuote> MotivationMondayWithQuotes { get; set; }
     public DbSet<DailyInspirationWithQuote> DailyInspirationWithQuotes { get; set; }
 
+    public DbSet<AiFact> AiFacts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Tag Name is unique

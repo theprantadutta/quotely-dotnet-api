@@ -14,6 +14,8 @@ public static class HangfireBackgroundJobs
         services.AddScoped<GetAllAuthorJob>();
         services.AddScoped<SendRandomNotificationJob>();
 
+        services.AddScoped<GetAiFactJob>();
+
         // Notifications System
         services.AddScoped<GetQuoteOfTheDayJob>();
         services.AddScoped<DailyInspirationJob>();
@@ -27,8 +29,7 @@ public static class HangfireBackgroundJobs
         var defaultJobOptions = BackgroundJobConstants.JobOptions;
 
         // Schedule recurring jobs with names
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<GetAllQuoteJob>(
                 "GetAllQuoteJob",
                 job => job.Invoke(),
@@ -36,8 +37,7 @@ public static class HangfireBackgroundJobs
                 defaultJobOptions
             );
 
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<GetAllAuthorJob>(
                 "GetAllAuthorJob",
                 job => job.Invoke(),
@@ -45,8 +45,7 @@ public static class HangfireBackgroundJobs
                 defaultJobOptions
             );
 
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<GetQuoteOfTheDayJob>(
                 "GetQuoteOfTheDayJob",
                 job => job.Invoke(),
@@ -54,8 +53,7 @@ public static class HangfireBackgroundJobs
                 defaultJobOptions
             );
 
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<DailyInspirationJob>(
                 "DailyInspirationJob",
                 job => job.Invoke(),
@@ -63,8 +61,7 @@ public static class HangfireBackgroundJobs
                 defaultJobOptions
             );
 
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<MotivationMondayJob>(
                 "MotivationMondayJob",
                 job => job.Invoke(),
@@ -72,12 +69,19 @@ public static class HangfireBackgroundJobs
                 defaultJobOptions
             );
 
-        app.Services
-            .GetRequiredService<IRecurringJobManager>()
+        app.Services.GetRequiredService<IRecurringJobManager>()
             .AddOrUpdate<SendRandomNotificationJob>(
                 "SendRandomNotificationJob",
                 job => job.Invoke(),
                 Cron.Weekly,
+                defaultJobOptions
+            );
+
+        app.Services.GetRequiredService<IRecurringJobManager>()
+            .AddOrUpdate<GetAiFactJob>(
+                "GetAiFactJob",
+                job => job.Invoke(),
+                "0 0 20 * *", // Day 20 of each month
                 defaultJobOptions
             );
     }

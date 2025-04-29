@@ -36,6 +36,14 @@ builder
 var pgsqlSection = builder.Configuration.GetSection("PGSQL");
 builder.Services.Configure<PgsqlConfiguration>(pgsqlSection);
 
+var apiKeySection = builder.Configuration.GetSection("AI");
+
+// builder.Services.Configure<AiApiKeysConfiguration>(apiKeySection);
+builder.Services.AddSingleton(
+    apiKeySection.Get<AiApiKeysConfiguration>()
+        ?? throw new Exception("All API Keys Should be there, you know")
+);
+
 // Add Postgres SQL Db Connection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(pgsqlSection.GetValue<string>("CONNECTION_STRING"))
@@ -117,7 +125,7 @@ app.UseHangfireDashboard(
     options: new DashboardOptions
     {
         Authorization = [HangfireAuthorizationConfiguration.GetBasicAuthFilter()],
-        StatsPollingInterval = 30_000
+        StatsPollingInterval = 30_000,
     }
 );
 
