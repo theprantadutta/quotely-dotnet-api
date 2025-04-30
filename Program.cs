@@ -76,6 +76,7 @@ builder.Services.AddTransient<IQuoteOfTheDayService, QuoteOfTheDayService>();
 builder.Services.AddTransient<IDailyInspirationService, DailyInspirationService>();
 builder.Services.AddTransient<IMotivationMondayService, MotivationMondayService>();
 builder.Services.AddTransient<IApplicationService, ApplicationService>();
+builder.Services.AddTransient<IFactService, FactService>();
 builder.Services.AddSingleton<IFirebaseMessagingClient, FirebaseMessagingClient>();
 
 // Adding Hangfire Configuration

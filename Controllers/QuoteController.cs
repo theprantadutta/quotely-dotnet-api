@@ -15,7 +15,7 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
 
     private readonly IQuoteService _quoteService =
         quoteService ?? throw new ArgumentNullException(nameof(quoteService));
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllQuotes(
         int pageNumber = 1,
@@ -26,7 +26,7 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
     {
         try
         {
-            // Split the tags string by commas to get a list of tags
+            // Split the tag string by commas to get a list of tags
             var tagList = tags?.Split(',').ToList() ?? [];
 
             return Ok(await _quoteService.GetAllQuotes(pageNumber, pageSize, getAllRows, tagList));
@@ -48,7 +48,14 @@ public class QuoteController(ILogger<QuoteController> logger, IQuoteService quot
     {
         try
         {
-            return Ok(await _quoteService.GetAllQuotesByAuthor(authorSlug, pageNumber, pageSize, getAllRows));
+            return Ok(
+                await _quoteService.GetAllQuotesByAuthor(
+                    authorSlug,
+                    pageNumber,
+                    pageSize,
+                    getAllRows
+                )
+            );
         }
         catch (Exception e)
         {

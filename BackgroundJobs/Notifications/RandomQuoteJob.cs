@@ -36,8 +36,8 @@ public class RandomQuoteJob(
 
             do
             {
-                randomQuote = await _appDbContext.Quotes
-                    .OrderBy(_ => Guid.NewGuid())
+                randomQuote = await _appDbContext
+                    .Quotes.OrderBy(_ => Guid.NewGuid())
                     .FirstOrDefaultAsync();
 
                 if (randomQuote == null)
@@ -47,7 +47,8 @@ public class RandomQuoteJob(
                 }
 
                 // Check if this quote is already in the quote of the day table
-                existingRandomQuote = await _appDbContext.RandomQuotes
+                existingRandomQuote = await _appDbContext
+                    .RandomQuotes
                     // ReSharper disable once AccessToModifiedClosure
                     .Where(x => x.QuoteId == randomQuote.Id)
                     .FirstOrDefaultAsync();
@@ -61,7 +62,7 @@ public class RandomQuoteJob(
                 }
             } while (existingRandomQuote != null);
 
-            // Now, randomQuote contains a quote that is not in the quote of the day
+            // Now, randomQuote contains a quote not in the quote of the day
             await _appDbContext.RandomQuotes.AddAsync(
                 new RandomQuote
                 {

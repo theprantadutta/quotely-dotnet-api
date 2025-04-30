@@ -27,6 +27,8 @@ public class GetAllAuthorJob(
     private readonly IUtilityService _utilityService =
         utilityService ?? throw new ArgumentNullException(nameof(utilityService));
 
+    private static readonly SemaphoreSlim Lock = new(1, 1);
+
     public async Task Invoke()
     {
         _logger.LogInformation(
@@ -36,6 +38,8 @@ public class GetAllAuthorJob(
 
         try
         {
+            await Lock.WaitAsync();
+
             var currentPage = 1;
             var totalPages = 1; // Default value for initialization
 
@@ -73,8 +77,9 @@ public class GetAllAuthorJob(
                         .Authors.Where(x => x.Id == authorDto.Id)
                         .FirstOrDefaultAsync();
 
-                    var imageLink = await _utilityService
-                        .GetWikipediaThumbnailAsync(authorDto.Link);
+                    var imageLink = await _utilityService.GetWikipediaThumbnailAsync(
+                        authorDto.Link
+                    );
 
                     if (existingAuthor == null)
                     {
@@ -139,6 +144,7 @@ public class GetAllAuthorJob(
         }
         finally
         {
+            Lock.Release();
             _logger.LogInformation(
                 "Finished the GetAllAuthorJob at {GetAllQuoteJobEndTime}...",
                 DateTime.Now.ToCustomLogDateFormat()

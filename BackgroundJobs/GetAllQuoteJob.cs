@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using Hangfire.Storage;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using quotely_dotnet_api.Contexts;
 using quotely_dotnet_api.Dtos;
@@ -29,6 +27,8 @@ public class GetAllQuoteJob(
     private readonly IUtilityService _utilityService =
         utilityService ?? throw new ArgumentNullException(nameof(utilityService));
 
+    private static readonly SemaphoreSlim Lock = new(1, 1);
+
     public async Task Invoke()
     {
         _logger.LogInformation(
@@ -38,6 +38,8 @@ public class GetAllQuoteJob(
 
         try
         {
+            await Lock.WaitAsync();
+
             var currentPage = 1;
             var totalPages = 1; // Default value for initialization
 
@@ -138,6 +140,7 @@ public class GetAllQuoteJob(
         }
         finally
         {
+            Lock.Release();
             _logger.LogInformation(
                 "Finished the GetAllQuoteJob at {GetAllQuoteJobEndTime}...",
                 DateTime.Now.ToCustomLogDateFormat()
