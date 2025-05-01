@@ -39,7 +39,7 @@ public class FactService(AppDbContext appDbContext) : IFactService
             var allFacts = await query.ToListAsync();
             return new AiFactResponseDto()
             {
-                Facts = allFacts,
+                AiFacts = allFacts,
                 Pagination = new PaginationDto()
                 {
                     PageNumber = 1,
@@ -61,7 +61,7 @@ public class FactService(AppDbContext appDbContext) : IFactService
 
         return new AiFactResponseDto()
         {
-            Facts = paginatedFacts,
+            AiFacts = paginatedFacts,
             Pagination = new PaginationDto()
             {
                 PageNumber = pageNumber,

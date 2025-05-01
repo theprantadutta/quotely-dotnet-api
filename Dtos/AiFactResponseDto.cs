@@ -4,6 +4,6 @@ namespace quotely_dotnet_api.Dtos;
 
 public class AiFactResponseDto
 {
-    public List<AiFact> Facts { get; set; } = [];
+    public List<AiFact> AiFacts { get; set; } = [];
     public PaginationDto Pagination { get; set; } = null!;
 }
