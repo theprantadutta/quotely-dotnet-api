@@ -63,4 +63,12 @@ public class AuthorService(AppDbContext appDbContext) : IAuthorService
             }
         };
     }
+
+    public async Task<Author?> GetAuthorDetails(string authorSlug)
+    {
+        return await _appDbContext
+            .Authors
+            .Where(x => x.Slug == authorSlug)
+            .FirstOrDefaultAsync();
+    }
 }

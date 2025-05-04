@@ -17,6 +17,22 @@ public class AuthorController(ILogger<AuthorController> logger, IAuthorService a
         authorService ?? throw new ArgumentNullException(nameof(authorService));
 
     [HttpGet]
+    public async Task<IActionResult> GetAuthorDetails(
+        string authorSlug
+    )
+    {
+        try
+        {
+            return Ok(await _authorService.GetAuthorDetails(authorSlug));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Something Went Wrong When Getting Author Details");
+            throw;
+        }
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetAllAuthors(
         string? search,
         int pageNumber = 1,
