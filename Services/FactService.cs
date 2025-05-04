@@ -33,6 +33,9 @@ public class FactService(AppDbContext appDbContext) : IFactService
             query = query.Where(f => aiProviders.Contains(f.Provider));
         }
 
+        // Apply random ordering (consider the performance implications)
+        query = query.OrderBy(_ => Guid.NewGuid());
+
         // For getAllRows, return everything (filtered but unpaginated)
         if (getAllRows)
         {
