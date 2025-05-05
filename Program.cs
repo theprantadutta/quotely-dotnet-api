@@ -8,6 +8,7 @@ using quotely_dotnet_api.Contexts;
 using quotely_dotnet_api.Environment;
 using quotely_dotnet_api.Extensions;
 using quotely_dotnet_api.Interfaces;
+using quotely_dotnet_api.Middlewares;
 using quotely_dotnet_api.Services;
 using Serilog;
 using Serilog.Debugging;
@@ -36,12 +37,18 @@ builder
 var pgsqlSection = builder.Configuration.GetSection("PGSQL");
 builder.Services.Configure<PgsqlConfiguration>(pgsqlSection);
 
-var apiKeySection = builder.Configuration.GetSection("AI");
+var aiApiKeySection = builder.Configuration.GetSection("AI");
 
 // builder.Services.Configure<AiApiKeysConfiguration>(apiKeySection);
 builder.Services.AddSingleton(
-    apiKeySection.Get<AiApiKeysConfiguration>()
-        ?? throw new Exception("All API Keys Should be there, you know")
+    aiApiKeySection.Get<AiApiKeysConfiguration>()
+        ?? throw new Exception("All AI API Keys Should be there, you know")
+);
+
+var apiKeySection = builder.Configuration.GetSection("API_KEYS");
+builder.Services.AddSingleton(
+    apiKeySection.Get<ApiKeysConfiguration>()
+        ?? throw new Exception("API Keys Should be there, you know")
 );
 
 // Add Postgres SQL Db Connection
@@ -82,6 +89,8 @@ builder.Services.AddSingleton<IFirebaseMessagingClient, FirebaseMessagingClient>
 // Adding Hangfire Configuration
 builder.Services.AddSingleton<HangfireAuthorizationConfiguration>();
 
+builder.Services.AddScoped<ApiKeyAuthMiddleware>();
+
 builder.Services.AddControllers();
 
 builder.Services.AddHealthChecks();
@@ -113,6 +122,9 @@ app.UseSerilogRequestLogging();
 
 // Mapping health checks url to '/health'
 app.MapHealthChecks("/health");
+
+// The following middleware is for API Key Authentication on controllers
+app.UseMiddleware<ApiKeyAuthMiddleware>();
 
 app.UseAuthorization();
 
