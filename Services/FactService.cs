@@ -47,8 +47,8 @@ public class FactService(AppDbContext appDbContext) : IFactService
                 {
                     PageNumber = 1,
                     PageSize = allFacts.Count,
-                    TotalItemCount = allFacts.Count
-                }
+                    TotalItemCount = allFacts.Count,
+                },
             };
         }
 
@@ -57,7 +57,6 @@ public class FactService(AppDbContext appDbContext) : IFactService
 
         // Apply pagination
         var paginatedFacts = await query
-            .OrderByDescending(f => f.DateAdded) // Default ordering by newest
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -70,7 +69,7 @@ public class FactService(AppDbContext appDbContext) : IFactService
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalItemCount = totalItemCount,
-            }
+            },
         };
     }
 
